@@ -67,12 +67,13 @@ export default function App() {
           placeholder="Search GIF..."
           className="px-4 py-2 border rounded-lg w-full sm:w-64 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
-        <button
+        <Button
+          variant="primary"
           onClick={() => void search(query)}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:scale-105 transition sm:mt-0 w-full sm:w-auto font-bold"
+          className="sm:mt-0 w-full sm:w-auto font-bold"
         >
           Search
-        </button>
+        </Button>
       </header>
 
       {error && (
