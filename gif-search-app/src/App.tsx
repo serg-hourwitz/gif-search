@@ -3,8 +3,6 @@ import Modal from './components/Modal';
 import GifModal from './components/GifModal';
 import Button from './components/Button';
 
-
-
 type GifObject = any;
 
 const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
@@ -26,6 +24,7 @@ export default function App() {
     setModalType(type);
   };
 
+  // GIF searching function
   const search = async (q: string) => {
     if (!API_KEY) {
       setError('API key not found. Set VITE_GIPHY_API_KEY in .env');
@@ -48,7 +47,7 @@ export default function App() {
       const data = await res.json();
       setGifs(data.data || []);
 
-      // ⛔ NEW: якщо немає результатів → показуємо модалку
+      // ⛔ NEW: if no results, show modal
       if (data.data.length === 0) {
         showModal('No results found 😢', 'error');
       }
@@ -59,7 +58,6 @@ export default function App() {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     void search(query);
