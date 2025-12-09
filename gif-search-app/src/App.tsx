@@ -33,6 +33,7 @@ export default function App() {
     }
     setLoading(true);
     setError(null);
+
     try {
       const params = new URLSearchParams({
         api_key: API_KEY,
@@ -40,10 +41,17 @@ export default function App() {
         limit: '24',
         rating: 'g',
       });
+
       const res = await fetch(`${API_URL}?${params}`);
       if (!res.ok) throw new Error('Network response was not ok');
+
       const data = await res.json();
       setGifs(data.data || []);
+
+      // ⛔ NEW: якщо немає результатів → показуємо модалку
+      if (data.data.length === 0) {
+        showModal('No results found 😢', 'error');
+      }
     } catch (err: any) {
       setError(err?.message || String(err));
       setGifs([]);
@@ -51,6 +59,7 @@ export default function App() {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     void search(query);
@@ -60,13 +69,27 @@ export default function App() {
     <div className="min-h-screen p-6 bg-gray-100">
       <header className="flex flex-col sm:flex-row gap-4 mb-6 items-start sm:items-center">
         <h1 className="text-2xl font-bold flex-grow">Easy GIF Search App 🎉</h1>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search GIF..."
-          className="px-4 py-2 border rounded-lg w-full sm:w-64 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-400"
-        />
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search GIF..."
+            className="px-4 py-2 border rounded-lg w-full font-bold focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-10"
+          />
+
+          {query && (
+            <button
+              onClick={() => {
+                setQuery('');
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-xl leading-none"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
         <Button
           variant="primary"
           onClick={() => void search(query)}
@@ -83,7 +106,7 @@ export default function App() {
       {loading ? (
         <div className="text-center py-20">Loading...</div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
           {gifs.map((g) => (
             <div
               key={g.id}
